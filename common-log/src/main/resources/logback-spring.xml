@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="10 seconds">
+
+    <!-- 引用 Spring Boot 的 logback 基础配置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="app_name" source="spring.application.name"/>
+
+    <contextName>logback</contextName>
+    <contextListener class="com.nicholaszhou.log.TtlMdcListener"/>
+
+    <property name="log.path" value="${LOG_PATH}"/>
+
+    <property name="log.maxDay" value="2"/>
+
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+<!--    <conversionRule conversionWord="m"-->
+<!--                    converterClass="com.faw.bt.common.desensitization.DesensitizationLogMessageConverter"/>-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev,default,sit,local,uat,tst">
+        <logger name="com.faw" level="debug"/>
+        <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+<!--            <appender-ref ref="ASYNC_FILE"/>-->
+<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.faw" level="info"/>
+        <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+<!--            <appender-ref ref="ASYNC_FILE"/>-->
+<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+        </root>
+    </springProfile>
+
+    <!--    <root level="INFO">-->
+    <!--        <appender-ref ref="ASYNC_FILE"/>-->
+    <!--        <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+    <!--    </root>-->
+
+</configuration>
