@@ -1,6 +1,6 @@
 package com.test.demo.support;
 
-import com.nicholaszhou.config.CommonLogProperties;
+import com.nicholaszhou.properties.CommonLogProperties;
 import com.nicholaszhou.log.interfacesupport.HttpLogConfigurer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;

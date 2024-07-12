@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.nicholaszhou.config.LogConfig
+  com.nicholaszhou.config.LogAutoConfiguration

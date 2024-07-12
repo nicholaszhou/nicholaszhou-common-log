@@ -1,6 +1,6 @@
 package com.nicholaszhou.log.interfacesupport;
 
-import com.nicholaszhou.config.CommonLogProperties;
+import com.nicholaszhou.properties.CommonLogProperties;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.nicholaszhou.config;
+package com.nicholaszhou.properties;
 
 import com.nicholaszhou.log.HttpLogger;
 import lombok.Data;
@@ -16,14 +16,19 @@ import java.util.stream.Stream;
 public class CommonLogProperties {
 
     /**
-     * 是否启用 com.weweibuy.framework.common.log.config.CommonLogConfig 配置
+     * 是否启用 LogAutoConfiguration 配置
      */
     private Boolean enable = true;
 
     /**
      * http 路径 相关配置
      */
-    private List<HttpPathProperties> httpPath;
+    private List<HttpPathProperties> disablePath;
+
+    /**
+     * 脱敏相关配置
+     */
+    private SensitizationProperties sensitization;
 
     @Data
     public static class HttpPathProperties {
@@ -32,24 +37,19 @@ public class CommonLogProperties {
                 Stream.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE).collect(Collectors.toSet());
 
         /**
-         * 请求路径
-         */
-        private String path;
-
-        /**
          * 请求 method
          */
         private Set<HttpMethod> methods = SUPPORT_METHOD;
 
         /**
+         * 不打log地址
+         */
+        private String path;
+
+        /**
          * 日志配置
          */
         private LogProperties log;
-
-        /**
-         * 脱敏相关配置
-         */
-        private SensitizationProperties sensitization;
 
     }
 

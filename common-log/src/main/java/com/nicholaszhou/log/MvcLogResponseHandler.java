@@ -1,6 +1,6 @@
 package com.nicholaszhou.log;
 
-import com.nicholaszhou.config.CommonLogProperties;
+import com.nicholaszhou.properties.CommonLogProperties;
 import com.nicholaszhou.log.interfacesupport.ReadableBodyResponseHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -13,7 +13,7 @@ import java.util.Set;
 public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
 
 
-    private MvcPathMappingOperator mvcPathMappingOperator;
+    private final MvcPathMappingOperator mvcPathMappingOperator;
 
     public MvcLogResponseHandler(MvcPathMappingOperator mvcPathMappingOperator) {
         this.mvcPathMappingOperator = mvcPathMappingOperator;
@@ -31,9 +31,8 @@ public class MvcLogResponseHandler implements ReadableBodyResponseHandler {
     private void dealResponse(HttpServletRequest request, ContentCachingResponseWrapper response) {
         CommonLogProperties.LogProperties logProperties = mvcPathMappingOperator.findLogProperties(request);
         Set<String> headerKeyList = Optional.ofNullable(logProperties).map(CommonLogProperties.LogProperties::getLogReqHeader).orElse(null);
-
         Boolean disableRespBody = Optional.ofNullable(logProperties).map(CommonLogProperties.LogProperties::getDisableRespBody).orElse(false);
-
-        HttpLogger.logResponseBody(response, request.getRequestURI(), headerKeyList, disableRespBody);
+        Boolean disableResp = Optional.ofNullable(logProperties).map(CommonLogProperties.LogProperties::getDisableResp).orElse(false);
+        HttpLogger.logResponseBody(response, request.getRequestURI(), headerKeyList, disableRespBody, disableResp);
     }
 }

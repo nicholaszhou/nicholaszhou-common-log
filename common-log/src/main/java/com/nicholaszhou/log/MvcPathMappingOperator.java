@@ -1,6 +1,6 @@
 package com.nicholaszhou.log;
 
-import com.nicholaszhou.config.CommonLogProperties;
+import com.nicholaszhou.properties.CommonLogProperties;
 import com.nicholaszhou.utils.HttpRequestUtils;
 import com.nicholaszhou.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,12 @@ public class MvcPathMappingOperator {
     /**
      * 精确匹配 key --> path + method
      */
-    private Map<String, CommonLogProperties.HttpPathProperties> methodPathExactProperties = new HashMap<>();
+    private final Map<String, CommonLogProperties.HttpPathProperties> methodPathExactProperties = new HashMap<>();
 
     /**
      * 路径匹配 key --> method
      */
-    private Map<String, List<CommonLogProperties.HttpPathProperties>> methodPatternProperties = new HashMap<>();
+    private final Map<String, List<CommonLogProperties.HttpPathProperties>> methodPatternProperties = new HashMap<>();
 
 
     public MvcPathMappingOperator(List<CommonLogProperties.HttpPathProperties> propertiesConfig, List<CommonLogProperties.HttpPathProperties> codeConfig) {
@@ -37,12 +37,10 @@ public class MvcPathMappingOperator {
      * @return
      */
     public CommonLogProperties.LogProperties findLogProperties(HttpServletRequest request) {
-        return findPathPropertiesAndSetReqAttr(request)
+        return Optional.ofNullable(findPathPropertiesAndSetReqAttr(request))
                 .map(CommonLogProperties.HttpPathProperties::getLog)
                 .orElse(null);
     }
-
-
 
     private void init(List<CommonLogProperties.HttpPathProperties> propertiesConfig, List<CommonLogProperties.HttpPathProperties> codeConfig) {
 
@@ -110,26 +108,23 @@ public class MvcPathMappingOperator {
         return path.toUpperCase() + "_" + method.toUpperCase();
     }
 
-    private Optional<CommonLogProperties.HttpPathProperties> findPathPropertiesAndSetReqAttr(HttpServletRequest request) {
+    private CommonLogProperties.HttpPathProperties findPathPropertiesAndSetReqAttr(HttpServletRequest request) {
 
         String path = request.getRequestURI();
         if (StringUtils.isBlank(path)) {
-            return Optional.empty();
+            return null;
         }
-        Optional<CommonLogProperties.HttpPathProperties> propertiesOpt = (Optional<CommonLogProperties.HttpPathProperties>) request.getAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY);
-        if (propertiesOpt != null) {
+        CommonLogProperties.HttpPathProperties propertiesOpt = (CommonLogProperties.HttpPathProperties) request.getAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY);
+        if (Optional.ofNullable(propertiesOpt).isPresent()) {
             return propertiesOpt;
         }
-
         String method = request.getMethod();
-
         CommonLogProperties.HttpPathProperties properties = findExact(path, method);
         if (properties == null) {
             properties = findPattern(path, method);
         }
-        propertiesOpt = Optional.ofNullable(properties);
-        request.setAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY, propertiesOpt);
-        return propertiesOpt;
+        request.setAttribute(HTTP_PATH_PROPERTIES_ATTR_KEY, properties);
+        return properties;
     }
 
     private CommonLogProperties.HttpPathProperties findExact(String path, String method) {
@@ -139,6 +134,4 @@ public class MvcPathMappingOperator {
     private CommonLogProperties.HttpPathProperties findPattern(String path, String method) {
         return Optional.ofNullable(methodPatternProperties.get(method.toUpperCase())).flatMap(s -> s.stream().filter(p -> HttpRequestUtils.isMatchPath(p.getPath(), path)).findFirst()).orElse(null);
     }
-
-
 }

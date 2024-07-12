@@ -6,6 +6,7 @@ import com.nicholaszhou.log.MvcLogRequestHandler;
 import com.nicholaszhou.log.MvcLogResponseHandler;
 import com.nicholaszhou.log.MvcPathMappingOperator;
 import com.nicholaszhou.log.interfacesupport.HttpLogConfigurer;
+import com.nicholaszhou.properties.CommonLogProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,12 +19,12 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties({CommonLogProperties.class})
 @ConditionalOnProperty(prefix = "common.log", name = "enable", havingValue = "true", matchIfMissing = true)
-public class LogConfig {
+public class LogAutoConfiguration {
     private final CommonLogProperties commonLogProperties;
     private List<HttpLogConfigurer> logDisableConfigurer;
 
 
-    public LogConfig(CommonLogProperties commonLogProperties, List<HttpLogConfigurer> logDisableConfigurer) {
+    public LogAutoConfiguration(CommonLogProperties commonLogProperties, List<HttpLogConfigurer> logDisableConfigurer) {
         this.commonLogProperties = commonLogProperties;
         this.logDisableConfigurer = logDisableConfigurer;
     }
@@ -36,7 +37,7 @@ public class LogConfig {
 
     @Bean
     public MvcLogRequestHandler mvcLogRequestHandler() {
-        return new MvcLogRequestHandler();
+        return new MvcLogRequestHandler(mvcPathMappingOperator());
     }
 
     @Bean
@@ -54,7 +55,7 @@ public class LogConfig {
         if (!CollectionUtils.isEmpty(logDisableConfigurer)) {
             logDisableConfigurer.forEach(l -> l.addHttpLogConfig(codeLogHttpProperties));
         }
-        List<CommonLogProperties.HttpPathProperties> httpPath = commonLogProperties.getHttpPath();
+        List<CommonLogProperties.HttpPathProperties> httpPath = commonLogProperties.getDisablePath();
         return new MvcPathMappingOperator(httpPath, codeLogHttpProperties);
     }
 }

@@ -1,5 +1,7 @@
 package com.nicholaszhou.log;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicholaszhou.constant.MDCConstants;
 import com.nicholaszhou.utils.HttpRequestUtils;
 import com.nicholaszhou.utils.IOUtils;
@@ -20,65 +22,53 @@ import java.util.stream.Collectors;
 
 /**
  * 处理http请求的log
+ *
+ * @param headerKeyList  请求头需要打印的key列表
+ * @param disableReqBody 请求体是否需要打印
+ * @param disableReq     请求是否需要打印
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
-    public static void logForRequest(HttpServletRequest request, Set<String> headerKeyList, Boolean disableReqBody) {
+    public static void logForRequest(HttpServletRequest request, Set<String> headerKeyList, Boolean disableReqBody, boolean disableReq) {
         Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableReqBody)) {
             body = reqBody(request);
         }
-        logForRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(),
-                headerMap, body);
-    }
-
-    private static void logForRequest(String path, String method, Map<String, String[]> parameterMap,
-                                      Map<String, String> headerMap, String body) {
-        parameterMap = Optional.ofNullable(parameterMap)
-                .orElse(Collections.emptyMap());
-        if (headerMap == null) {
-            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Body: {}",
-                    path,
-                    method,
-                    HttpRequestUtils.parameterMapToString(parameterMap),
-                    body);
-        } else {
-            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Header: {}, Body: {}",
-                    path,
-                    method,
-                    HttpRequestUtils.parameterMapToString(parameterMap),
-                    headerStr(headerMap),
-                    body);
+        if (!Boolean.TRUE.equals(disableReq)) {
+            logForRequest(request.getRequestURI(), request.getMethod(), request.getParameterMap(), headerMap, body);
         }
 
     }
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, String requestPath, Set<String> headerKeyList, Boolean disableRespBody) {
+    private static void logForRequest(String path, String method, Map<String, String[]> parameterMap, Map<String, String> headerMap, String body) {
+        parameterMap = Optional.ofNullable(parameterMap).orElse(Collections.emptyMap());
+        if (headerMap == null) {
+            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Body: {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), body);
+        } else {
+            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Header: {}, Body: {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), headerStr(headerMap), body);
+        }
+
+    }
+
+    public static void logResponseBody(ContentCachingResponseWrapper response, String requestPath, Set<String> headerKeyList, Boolean disableRespBody, Boolean disableResp) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableRespBody)) {
             body = respBody(response);
         }
-        Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
-        logResponseBody(requestPath,body, response.getStatus(), headerMap);
+        if (!Boolean.TRUE.equals(disableResp)) {
+            Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
+            logResponseBody(requestPath, body, response.getStatus(), headerMap);
+        }
     }
 
-    public static void logResponseBody(String requestPath,String body, int status, Map<String, String> headerMap) {
+    public static void logResponseBody(String requestPath, String body, int status, Map<String, String> headerMap) {
         Long timestamp = HttpRequestUtils.getRequestAttribute(Objects.requireNonNull(RequestContextHolder.getRequestAttributes()), MDCConstants.HttpServletConstant.REQUEST_TIMESTAMP);
         if (headerMap == null) {
-            log.info("Http响应 路径:{}, Status: {}, Body: {}, 请求耗时(0.1秒): {}",
-                    requestPath,
-                    status,
-                    body,
-                    (System.currentTimeMillis() - timestamp)/100);
+            log.info("Http响应 路径:{}, Status: {}, Body: {}, 请求耗时(毫秒): {}", requestPath, status, body, (System.currentTimeMillis() - timestamp) / 10);
         } else {
-            log.info("Http响应 路径:{}, Status: {}, Header: {}, Body: {}, 请求耗时(0.1秒): {}",
-                    requestPath,
-                    status,
-                    headerStr(headerMap),
-                    body,
-                    (System.currentTimeMillis() - timestamp)/100);
+            log.info("Http响应 路径:{}, Status: {}, Header: {}, Body: {}, 请求耗时(毫秒): {}", requestPath, status, headerStr(headerMap), body, (System.currentTimeMillis() - timestamp) / 10);
         }
 
     }
@@ -99,9 +89,15 @@ public class HttpLogger {
     }
 
     private static String headerStr(Map<String, String> headerMap) {
-        return headerMap.entrySet().stream()
-                .map(e -> e.getKey() + ":" + e.getValue())
-                .collect(Collectors.joining(","));
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(headerMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+//        return headerMap.entrySet().stream()
+//                .map(e -> e.getKey() + ":" + e.getValue())
+//                .collect(Collectors.joining(","));
     }
 
     private static String reqBody(HttpServletRequest request) {
@@ -119,16 +115,10 @@ public class HttpLogger {
 
     // 判断是否是可读log
     private static boolean isBoundaryBody(String contentType) {
-        return StringUtils.isNotBlank(contentType)
-                && !HttpRequestUtils.notBoundaryBody(contentType);
+        return StringUtils.isNotBlank(contentType) && !HttpRequestUtils.notBoundaryBody(contentType);
     }
 
     private static Map<String, String> headerMap(Set<String> headerKeyList, Function<String, String> getHeaderF) {
-        return Optional.ofNullable(headerKeyList)
-                .map(l -> l.stream()
-                        .map(k -> new AbstractMap.SimpleEntry<>(k, getHeaderF.apply(k)))
-                        .filter(entry -> StringUtils.isNotBlank(entry.getValue()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, n) -> n)))
-                .orElse(null);
+        return Optional.ofNullable(headerKeyList).map(l -> l.stream().map(k -> new AbstractMap.SimpleEntry<>(k, getHeaderF.apply(k))).filter(entry -> StringUtils.isNotBlank(entry.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, n) -> n))).orElse(null);
     }
 }
