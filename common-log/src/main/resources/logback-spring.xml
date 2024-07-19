@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="10 seconds">
-
-    <!-- 引用 Spring Boot 的 logback 基础配置 -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <springProperty scope="context" name="app_name" source="spring.application.name"/>
-
     <contextName>logback</contextName>
     <contextListener class="com.nicholaszhou.log.TtlMdcListener"/>
+    <!-- 引用 Spring Boot 的 logback 基础配置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <springProperty scope="context" name="log_name" source="spring.application.name"/>
+    <springProperty scope="context" name="log_max_day" source="spring.application.log.max_day"/>
+    <property name="log.path" value="${log.path:-/logs/${log_name}}"/>
+    <property name="log.maxDay" value="${log.maxDay:-3}"/>
 
-    <property name="log.path" value="${LOG_PATH}"/>
-
-    <property name="log.maxDay" value="2"/>
-
-
-    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
-    <conversionRule conversionWord="wex"
-                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
-    <conversionRule conversionWord="wEx"
-                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
-
-<!--    <conversionRule conversionWord="m"-->
-<!--                    converterClass="com.faw.bt.common.desensitization.DesensitizationLogMessageConverter"/>-->
+    <conversionRule conversionWord="m"
+                    converterClass="com.nicholaszhou.desensitization.DesensitizationLogMessageConverter"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
@@ -31,29 +21,66 @@
         </encoder>
     </appender>
 
+    <appender name="FILE_OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/application.log</file>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder"
+                 charset="UTF-8">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "level": "%level",
+                        "uid": "%X{uid}",
+                        "tid":"%X{tid}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%m"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>${log.maxDay}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步写日志 -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="FILE_OUT"/>
+    </appender>
+
     <springProfile name="dev,default,sit,local,uat,tst">
-        <logger name="com.faw" level="debug"/>
+        <logger name="com.nicholaszhou" level="DEBUG"/>
         <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
-        <root level="INFO">
+        <logger name="org.springframework" level="info" additivity="false"/>
+        <logger name="org.apache" level="info" additivity="false"/>
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
-<!--            <appender-ref ref="ASYNC_FILE"/>-->
-<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+            <appender-ref ref="FILE_OUT"/>
         </root>
     </springProfile>
 
     <springProfile name="prod">
-        <logger name="com.faw" level="info"/>
+        <logger name="com.nicholaszhou" level="info"/>
         <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
+        <logger name="org.springframework.boot.autoconfigure.logging" level="error" additivity="false"/>
+        <logger name="org.springframework.beans.factory.support" level="error" additivity="false"/>
+        <logger name="org.springframework.web.servlet" level="error" additivity="false"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-<!--            <appender-ref ref="ASYNC_FILE"/>-->
-<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+            <!--            <appender-ref ref="ASYNC_FILE"/>-->
         </root>
     </springProfile>
 
-    <!--    <root level="INFO">-->
-    <!--        <appender-ref ref="ASYNC_FILE"/>-->
-    <!--        <appender-ref ref="ASYNC_ERROR_FILE"/>-->
-    <!--    </root>-->
 
 </configuration>

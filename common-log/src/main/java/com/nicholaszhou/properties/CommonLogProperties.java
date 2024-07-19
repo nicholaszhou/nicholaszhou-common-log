@@ -20,15 +20,25 @@ public class CommonLogProperties {
      */
     private Boolean enable = true;
 
+    private Boolean trace = true;
+
+    private Boolean sensitization = true;
+
     /**
      * http 路径 相关配置
      */
     private List<HttpPathProperties> disablePath;
 
     /**
+     * log全局配置
+     */
+    private LogProperties logProperties;
+
+    /**
      * 脱敏相关配置
      */
-    private SensitizationProperties sensitization;
+    private SensitizationProperties sensitizationProperties;
+
 
     @Data
     public static class HttpPathProperties {
@@ -51,6 +61,10 @@ public class CommonLogProperties {
          */
         private LogProperties log;
 
+        /**
+         * 脱敏相关配置
+         */
+        private SensitizationProperties sensitizationProperties;
     }
 
     @Data
@@ -94,11 +108,11 @@ public class CommonLogProperties {
          * 敏感字段
          */
         private Set<String> sensitizationFields;
-
         /**
          * Logger 用于精确匹配
          */
         private String logger = HttpLogger.class.getName();
+
     }
 
 

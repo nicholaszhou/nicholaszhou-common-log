@@ -1,9 +1,11 @@
 package com.nicholaszhou.log;
 
+import com.nicholaszhou.constant.MDCConstants;
 import com.nicholaszhou.properties.CommonLogProperties;
 import com.nicholaszhou.utils.HttpRequestUtils;
 import com.nicholaszhou.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.CollectionUtils;
 
@@ -108,6 +110,12 @@ public class MvcPathMappingOperator {
         return path.toUpperCase() + "_" + method.toUpperCase();
     }
 
+    public CommonLogProperties.SensitizationProperties findSensitizationProperties(HttpServletRequest request) {
+        return Optional.ofNullable(findPathPropertiesAndSetReqAttr(request))
+                .map(CommonLogProperties.HttpPathProperties::getSensitizationProperties)
+                .orElse(null);
+    }
+
     private CommonLogProperties.HttpPathProperties findPathPropertiesAndSetReqAttr(HttpServletRequest request) {
 
         String path = request.getRequestURI();
@@ -133,5 +141,24 @@ public class MvcPathMappingOperator {
 
     private CommonLogProperties.HttpPathProperties findPattern(String path, String method) {
         return Optional.ofNullable(methodPatternProperties.get(method.toUpperCase())).flatMap(s -> s.stream().filter(p -> HttpRequestUtils.isMatchPath(p.getPath(), path)).findFirst()).orElse(null);
+    }
+
+    public static void bindSensitizationContext(Set<String> sensitizationField, String logger) {
+        MDC.put(MDCConstants.SENSITIZATION_FIELDS, sensitizationField.stream().collect(Collectors.joining(MDCConstants.COMMA_STR)));
+        MDC.put(MDCConstants.SENSITIZATION_LOGGER, logger);
+    }
+
+    public static void removeSensitizationContext() {
+        MDC.remove(MDCConstants.SENSITIZATION_FIELDS);
+        MDC.remove(MDCConstants.SENSITIZATION_LOGGER);
+    }
+
+    public static Optional<Set<String>> getSensitizationField() {
+        return Optional.ofNullable(MDC.get(MDCConstants.SENSITIZATION_FIELDS))
+                .map(s -> Arrays.stream(s.split(MDCConstants.COMMA_STR)).collect(Collectors.toSet()));
+    }
+
+    public static Optional<String> getSensitizationLogger() {
+        return Optional.ofNullable(MDC.get(MDCConstants.SENSITIZATION_LOGGER));
     }
 }

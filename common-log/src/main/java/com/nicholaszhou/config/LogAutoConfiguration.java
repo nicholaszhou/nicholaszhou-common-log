@@ -1,6 +1,7 @@
 package com.nicholaszhou.config;
 
 import com.nicholaszhou.filter.HttpLoggerFilter;
+import com.nicholaszhou.filter.SensitizationFilter;
 import com.nicholaszhou.filter.TraceCodeFilter;
 import com.nicholaszhou.log.MvcLogRequestHandler;
 import com.nicholaszhou.log.MvcLogResponseHandler;
@@ -33,6 +34,12 @@ public class LogAutoConfiguration {
     @ConditionalOnProperty(prefix = "common.log.trace", name = "enable", havingValue = "true", matchIfMissing = true)
     public TraceCodeFilter traceCodeFilter() {
         return new TraceCodeFilter();
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "common.log.sensitization", name = "enable", havingValue = "true",matchIfMissing = true)
+    public SensitizationFilter sensitizationFilter() {
+        return new SensitizationFilter(mvcPathMappingOperator());
     }
 
     @Bean

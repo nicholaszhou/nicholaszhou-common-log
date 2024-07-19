@@ -30,8 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
-    public static void logForRequest(HttpServletRequest request, Set<String> headerKeyList, Boolean disableReqBody, boolean disableReq) {
-        Map<String, String> headerMap = headerMap(headerKeyList, request::getHeader);
+    public static void logForRequest(HttpServletRequest request, Map<String, String> headerMap, Boolean disableReqBody, boolean disableReq) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableReqBody)) {
             body = reqBody(request);

@@ -19,7 +19,7 @@ public class TestController {
 
 
     @GetMapping("/test")
-    public BaseResultVO<String> test(@RequestHeader(value = "User-Code", required = false) String mobile, @RequestParam(defaultValue = "Android") String deviceType) {
+    public BaseResultVO<String> test(@RequestHeader(value = "mobile", required = false) String mobile, @RequestParam(defaultValue = "Android") String deviceType) {
         BaseResultVO<String> baseResultVO = new BaseResultVO<>();
         baseResultVO.setCode("000000");
         baseResultVO.setMsg("success");

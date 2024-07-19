@@ -29,6 +29,16 @@ public class MDCConstants {
      */
     public static final String CONNECTOR_STR = "&";
 
+    /**
+     * 敏感字段
+     */
+    public static String SENSITIZATION_FIELDS = "sensitization_fields";
+
+    /**
+     * 脱敏logger
+     */
+    public static String SENSITIZATION_LOGGER = "sensitization_logger";
+
     public class LogTraceConstant {
 
         public static final String HTTP_TRACE_CODE_HEADER = "X-Tid";
