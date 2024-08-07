@@ -1,6 +1,7 @@
 package com.nicholaszhou.utils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class IOUtils {
@@ -22,5 +23,9 @@ public class IOUtils {
         }
 
         return responseStrBuilder.toString();
+    }
+
+    public static String toString(byte[] input, String charsetName) throws IOException {
+        return new String(input, Charsets.toCharset(charsetName));
     }
 }

@@ -2,10 +2,7 @@ package com.test.demo;
 
 import com.test.demo.support.BaseResultVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -25,6 +22,16 @@ public class TestController {
         baseResultVO.setMsg("success");
         log.info("mobile:{},deviceType:{}", mobile, deviceType);
         baseResultVO.setData(testService.test(mobile, deviceType));
+        return baseResultVO;
+    }
+
+    @PostMapping(value = "/testPost", produces = "application/json;charset=UTF-8")
+    public BaseResultVO<String> test(@RequestBody TestEntity testEntity) {
+        BaseResultVO<String> baseResultVO = new BaseResultVO<>();
+        baseResultVO.setCode("000000");
+        baseResultVO.setMsg("success");
+        log.info("mobile:{},deviceType:{}", testEntity.getMobile(), testEntity.getDeviceType());
+        baseResultVO.setData(testService.test(testEntity.getMobile(), testEntity.getDeviceType()));
         return baseResultVO;
     }
 }

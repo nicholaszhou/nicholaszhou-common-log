@@ -1,6 +1,7 @@
 package com.nicholaszhou.filter;
 
 import com.nicholaszhou.constant.MDCConstants;
+import com.nicholaszhou.log.CopyContentCachingRequestWrapper;
 import com.nicholaszhou.log.interfacesupport.ReadableBodyRequestHandler;
 import com.nicholaszhou.log.interfacesupport.ReadableBodyResponseHandler;
 import com.nicholaszhou.utils.HttpRequestUtils;
@@ -9,6 +10,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.FilterChain;
@@ -18,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@Order(-100)
+@Order(-103)
 public class HttpLoggerFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -26,17 +28,14 @@ public class HttpLoggerFilter extends OncePerRequestFilter {
     @Autowired
     private List<ReadableBodyResponseHandler> readableBodyResponseHandlerList;
 
-    //    public HttpLoggerFilter(List<ReadableBodyRequestHandler> requestHandlerList, List<ReadableBodyResponseHandler> readableBodyResponseHandlerList) {
-//        this.requestHandlerList = requestHandlerList;
-//        this.readableBodyResponseHandlerList = readableBodyResponseHandlerList;
-//    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         setRequestAttributes(request);
+        // 获取请求体内容
         boolean includePayload = HttpRequestUtils.isIncludePayload(request);
-//        if (includePayload) {
-//            request = new CopyContentCachingRequestWrapper(request);
-//        }
+        if (includePayload) {
+            request = new CopyContentCachingRequestWrapper(request);
+        }
         response = new ContentCachingResponseWrapper(response);
         try {
             boolean shouldReturn = handlerReadableBodyRequest(request, response);

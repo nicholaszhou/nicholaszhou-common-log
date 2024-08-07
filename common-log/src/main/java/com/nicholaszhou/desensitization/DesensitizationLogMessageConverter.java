@@ -6,18 +6,22 @@ import com.nicholaszhou.log.MvcPathMappingOperator;
 import com.nicholaszhou.properties.CommonLogProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 脱敏日志转化器
  */
+@EnableConfigurationProperties({CommonLogProperties.class})
 public class DesensitizationLogMessageConverter extends ClassicConverter {
+
+    @Autowired
+    private CommonLogProperties commonLogProperties;
 
     private static final Integer MAX_MESSAGE_LENGTH = 10000;
 

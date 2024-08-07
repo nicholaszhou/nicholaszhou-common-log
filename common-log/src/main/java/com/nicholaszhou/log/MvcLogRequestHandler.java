@@ -3,7 +3,6 @@ package com.nicholaszhou.log;
 import com.nicholaszhou.properties.CommonLogProperties;
 import com.nicholaszhou.log.interfacesupport.ReadableBodyRequestHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.MimeHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

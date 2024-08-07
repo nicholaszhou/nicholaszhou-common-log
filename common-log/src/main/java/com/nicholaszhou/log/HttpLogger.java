@@ -46,28 +46,27 @@ public class HttpLogger {
         if (headerMap == null) {
             log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Body: {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), body);
         } else {
-            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Header: {}, Body: {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), headerStr(headerMap), body);
+            log.info("Http请求 Path: {}, Method: {}, Parameter: {}, Header: {}, Body: {}", path, method, HttpRequestUtils.parameterMapToString(parameterMap), HttpRequestUtils.headerStr(headerMap), body);
         }
 
     }
 
-    public static void logResponseBody(ContentCachingResponseWrapper response, String requestPath, Set<String> headerKeyList, Boolean disableRespBody, Boolean disableResp) {
+    public static void logResponseBody(ContentCachingResponseWrapper response, String requestPath, String headerKeyList, Boolean disableRespBody, Boolean disableResp) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableRespBody)) {
             body = respBody(response);
         }
         if (!Boolean.TRUE.equals(disableResp)) {
-            Map<String, String> headerMap = headerMap(headerKeyList, response::getHeader);
-            logResponseBody(requestPath, body, response.getStatus(), headerMap);
+            logResponseBody(requestPath, body, response.getStatusCode(), headerKeyList);
         }
     }
 
-    public static void logResponseBody(String requestPath, String body, int status, Map<String, String> headerMap) {
+    public static void logResponseBody(String requestPath, String body, int status, String headerMap) {
         Long timestamp = HttpRequestUtils.getRequestAttribute(Objects.requireNonNull(RequestContextHolder.getRequestAttributes()), MDCConstants.HttpServletConstant.REQUEST_TIMESTAMP);
         if (headerMap == null) {
             log.info("Http响应 路径:{}, Status: {}, Body: {}, 请求耗时(毫秒): {}", requestPath, status, body, (System.currentTimeMillis() - timestamp) / 10);
         } else {
-            log.info("Http响应 路径:{}, Status: {}, Header: {}, Body: {}, 请求耗时(毫秒): {}", requestPath, status, headerStr(headerMap), body, (System.currentTimeMillis() - timestamp) / 10);
+            log.info("Http响应 路径:{}, Status: {}, Header: {}, Body: {}, 请求耗时(毫秒): {}", requestPath, status, headerMap, body, (System.currentTimeMillis() - timestamp) / 10);
         }
 
     }
@@ -85,18 +84,6 @@ public class HttpLogger {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String headerStr(Map<String, String> headerMap) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(headerMap);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-//        return headerMap.entrySet().stream()
-//                .map(e -> e.getKey() + ":" + e.getValue())
-//                .collect(Collectors.joining(","));
     }
 
     private static String reqBody(HttpServletRequest request) {
