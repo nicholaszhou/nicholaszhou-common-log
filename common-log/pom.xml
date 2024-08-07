@@ -8,6 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <groupId>com.nicholaszhou</groupId>
     <artifactId>common-log</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-log</name>
