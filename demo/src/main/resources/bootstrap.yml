@@ -1,0 +1,12 @@
+common:
+  log:
+    disable-path:
+      - log:
+          disable-req: true
+          disable-resp: true
+        path: /admin/office/vehicle/vehicle/plan
+spring:
+  application:
+    name: demo
+  profiles:
+    active: uat

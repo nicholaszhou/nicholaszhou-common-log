@@ -20,6 +20,10 @@ public class TestController {
         BaseResultVO<String> baseResultVO = new BaseResultVO<>();
         baseResultVO.setCode("000000");
         baseResultVO.setMsg("success");
+        String test = null;
+        if (test.equals(mobile)) {
+            baseResultVO.setData("sdsf");
+        }
         log.info("mobile:{},deviceType:{}", mobile, deviceType);
         baseResultVO.setData(testService.test(mobile, deviceType));
         return baseResultVO;

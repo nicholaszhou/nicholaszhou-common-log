@@ -3,21 +3,42 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.nicholaszhou</groupId>
+        <groupId>io.github.nicholaszhou</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.nicholaszhou</groupId>
-    <artifactId>common-log</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>io.github.nicholaszhou</groupId>
+    <artifactId>common-log-starter</artifactId>
+    <version>0.0.1.6</version>
+    <packaging>jar</packaging>
     <name>common-log</name>
     <description>common-log</description>
+    <url>https://github.com/nicholaszhou/nicholaszhou-common-log</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>nicholaszhou</id>
+            <name>nicholaszhou</name>
+            <email>290359373@qq.com</email>
+            <url>https://nicholaszhou.github.io</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/nicholaszhou/nicholaszhou-common-log</url>
+        <connection>scm:git:https://github.com/nicholaszhou/nicholaszhou-common-log.git</connection>
+        <developerConnection>https://nicholaszhou.github.io</developerConnection>
+        <tag>${version}</tag>
+    </scm>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
         <!--雪花算法生成id：https://github.com/yitter/idgenerator/tree/master/Java-->
         <dependency>
             <groupId>com.github.yitter</groupId>
@@ -27,7 +48,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.7.18</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -38,6 +59,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Use runtime scope if the project does not have any compile-time usage of logstash-logback-encoder,
@@ -56,6 +78,32 @@
     </dependencies>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>common-log</publishingServerId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <!--与xml中对应的id一致-->
+                        <id>gpg-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <resources>
             <resource>
                 <directory>src/main/java</directory>

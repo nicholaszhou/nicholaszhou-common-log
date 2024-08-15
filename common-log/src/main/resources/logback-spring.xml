@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="10 seconds">
     <contextName>logback</contextName>
-    <contextListener class="com.nicholaszhou.log.TtlMdcListener"/>
+    <contextListener class="io.github.nicholaszhou.log.TtlMdcListener"/>
     <!-- 引用 Spring Boot 的 logback 基础配置 -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <springProperty scope="context" name="log_name" source="spring.application.name"/>
     <springProperty scope="context" name="log_max_day" source="spring.application.log.max_day"/>
     <property name="log.path" value="${log.path:-/logs/${log_name}}"/>
+    <property name="log.errorpath" value="${log.errorpath:-/logs/error/${log_name}}"/>
     <property name="log.maxDay" value="${log.maxDay:-3}"/>
 
     <conversionRule conversionWord="m"
-                    converterClass="com.nicholaszhou.desensitization.DesensitizationLogMessageConverter"/>
+                    converterClass="io.github.nicholaszhou.desensitization.DesensitizationLogMessageConverter"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
         </filter>
         <encoder>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</Pattern>
+            <Pattern>%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</Pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -52,6 +53,46 @@
         </rollingPolicy>
     </appender>
 
+    <!-- 错误日志文件 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.errorpath}/error-application.log</file>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder"
+                 charset="UTF-8">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "app": "${app_name}",
+                        "level": "%level",
+                        "uid": "%X{uid}",
+                        "tid":"%X{tid}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.errorpath}/error-application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>${log.maxDay}</maxHistory>
+            <!--每个文件最多100MB，保留3天的历史记录，但最多10GB-->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!--重启清理日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
     <!-- 异步写日志 -->
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
@@ -59,28 +100,36 @@
         <appender-ref ref="FILE_OUT"/>
     </appender>
 
+    <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <appender-ref ref="ERROR_FILE"/>
+    </appender>
+
     <springProfile name="dev,default,sit,local,uat,tst">
-        <logger name="com.nicholaszhou" level="DEBUG"/>
-        <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
-        <logger name="org.springframework" level="info" additivity="false"/>
-        <logger name="org.apache" level="info" additivity="false"/>
-        <root level="DEBUG">
+        <logger name="io.netty" level="warn"/>
+        <logger name="com.alibaba" level="warn"/>
+        <logger name="org.springframework" level="warn"/>
+        <logger name="org.apache" level="warn"/>
+        <logger name="io.lettuce" level="warn"/>
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_OUT"/>
+<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
         </root>
     </springProfile>
 
     <springProfile name="prod">
-        <logger name="com.nicholaszhou" level="info"/>
-        <logger name="com.alibaba.nacos" level="OFF" additivity="false"/>
-        <logger name="org.springframework.boot.autoconfigure.logging" level="error" additivity="false"/>
-        <logger name="org.springframework.beans.factory.support" level="error" additivity="false"/>
-        <logger name="org.springframework.web.servlet" level="error" additivity="false"/>
+        <logger name="io.netty" level="error"/>
+        <logger name="com.alibaba" level="error"/>
+        <logger name="org.springframework" level="error"/>
+        <logger name="org.apache" level="error"/>
+        <logger name="io.lettuce" level="error"/>
+        <logger name="org.mybatis" level="error"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <!--            <appender-ref ref="ASYNC_FILE"/>-->
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
         </root>
     </springProfile>
-
-
 </configuration>

@@ -14,7 +14,7 @@
     <description>demo</description>
     <properties>
         <java.version>8</java.version>
-        <common-log.version>0.0.1-SNAPSHOT</common-log.version>
+        <common-log.version>0.0.1</common-log.version>
         <lombok.version>1.18.30</lombok.version>
     </properties>
     <dependencies>
@@ -39,9 +39,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.nicholaszhou</groupId>
-            <artifactId>common-log</artifactId>
-            <version>${common-log.version}</version>
+            <groupId>io.github.nicholaszhou</groupId>
+            <artifactId>common-log-starter</artifactId>
+            <version>0.0.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
