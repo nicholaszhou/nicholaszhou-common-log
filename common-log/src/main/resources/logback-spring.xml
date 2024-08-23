@@ -12,6 +12,8 @@
 
     <conversionRule conversionWord="m"
                     converterClass="io.github.nicholaszhou.desensitization.DesensitizationLogMessageConverter"/>
+    <conversionRule conversionWord="stack"
+                    converterClass="net.logstash.logback.stacktrace.ShortenedThrowableConverter" />
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
@@ -28,7 +30,9 @@
                  charset="UTF-8">
             <providers>
                 <timestamp>
-                    <timeZone>UTC</timeZone>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS</pattern>
+                    <timeZone>UTC+8</timeZone>
+                    <fieldName>logTime</fieldName>
                 </timestamp>
                 <pattern>
                     <pattern>
@@ -38,18 +42,21 @@
                         "tid":"%X{tid}",
                         "thread": "%thread",
                         "class": "%logger{40}",
-                        "message": "%m"
+                        "message": "%m",
+                        "stack": "%stack"
                         }
                     </pattern>
                 </pattern>
             </providers>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${log.path}/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>100MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxFileSize>100MB</maxFileSize>
             <maxHistory>${log.maxDay}</maxHistory>
+            <!--每个文件最多100MB，保留3天的历史记录，但最多10GB-->
+            <totalSizeCap>30GB</totalSizeCap>
+            <!--重启清理日志文件-->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
 
@@ -82,7 +89,7 @@
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>${log.maxDay}</maxHistory>
             <!--每个文件最多100MB，保留3天的历史记录，但最多10GB-->
-            <totalSizeCap>10GB</totalSizeCap>
+            <totalSizeCap>5GB</totalSizeCap>
             <!--重启清理日志文件-->
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
@@ -115,7 +122,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_OUT"/>
-<!--            <appender-ref ref="ASYNC_ERROR_FILE"/>-->
+            <appender-ref ref="ASYNC_ERROR_FILE"/>
         </root>
     </springProfile>
 

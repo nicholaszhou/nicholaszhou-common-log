@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>common-log-starter</artifactId>
-    <version>0.0.1.6</version>
+    <version>0.0.1.9</version>
     <packaging>jar</packaging>
     <name>common-log</name>
     <description>common-log</description>
@@ -69,6 +69,12 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>5.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-annotations</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
