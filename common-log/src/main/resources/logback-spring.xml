@@ -31,7 +31,7 @@
             <providers>
                 <timestamp>
                     <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS</pattern>
-                    <timeZone>UTC+8</timeZone>
+                    <timeZone>UTC</timeZone>
                     <fieldName>logTime</fieldName>
                 </timestamp>
                 <pattern>
@@ -54,7 +54,7 @@
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>${log.maxDay}</maxHistory>
             <!--每个文件最多100MB，保留3天的历史记录，但最多10GB-->
-            <totalSizeCap>30GB</totalSizeCap>
+            <totalSizeCap>3GB</totalSizeCap>
             <!--重启清理日志文件-->
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
@@ -67,7 +67,9 @@
                  charset="UTF-8">
             <providers>
                 <timestamp>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSS</pattern>
                     <timeZone>UTC</timeZone>
+                    <fieldName>logTime</fieldName>
                 </timestamp>
                 <pattern>
                     <pattern>
@@ -78,7 +80,8 @@
                         "tid":"%X{tid}",
                         "thread": "%thread",
                         "class": "%logger{40}",
-                        "message": "%message"
+                        "message": "%m",
+                        "stack": "%stack"
                         }
                     </pattern>
                 </pattern>
@@ -89,7 +92,7 @@
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>${log.maxDay}</maxHistory>
             <!--每个文件最多100MB，保留3天的历史记录，但最多10GB-->
-            <totalSizeCap>5GB</totalSizeCap>
+            <totalSizeCap>3GB</totalSizeCap>
             <!--重启清理日志文件-->
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
@@ -121,7 +124,7 @@
         <logger name="io.lettuce" level="warn"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE_OUT"/>
+            <appender-ref ref="ASYNC_FILE"/>
             <appender-ref ref="ASYNC_ERROR_FILE"/>
         </root>
     </springProfile>
