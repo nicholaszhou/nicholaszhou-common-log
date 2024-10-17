@@ -1,6 +1,7 @@
 package com.test.demo;
 
 import com.test.demo.support.BaseResultVO;
+import io.github.nicholaszhou.config.LogAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,15 +30,15 @@ public class TestController {
         return baseResultVO;
     }
 
-    @PostMapping(value = "/testPost", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/doTestPost", produces = "application/json;charset=UTF-8")
     public BaseResultVO<String> test(@RequestBody TestEntity testEntity) {
         BaseResultVO<String> baseResultVO = new BaseResultVO<>();
         baseResultVO.setCode("000000");
         baseResultVO.setMsg("success");
-        for (int i = 0; i < 10000000; i++){
-        log.info("mobile:{},deviceType:{}", testEntity.getMobile(), testEntity.getDeviceType());
-        baseResultVO.setData(testService.test(testEntity.getMobile(), testEntity.getDeviceType()));
-        }
+//        for (int i = 0; i < 10000000; i++){
+//        log.info("mobile:{},deviceType:{}", testEntity.getMobile(), testEntity.getDeviceType());
+//        baseResultVO.setData(testService.test(testEntity.getMobile(), testEntity.getDeviceType()));
+//        }
         return baseResultVO;
     }
 }

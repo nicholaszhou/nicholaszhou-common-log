@@ -1,10 +1,21 @@
 common:
   log:
+    enable: true  #是否开启日志
+    trace:
+      enable: true   #是否开启跟踪日志
     disable-path:
       - log:
-          disable-req: true
-          disable-resp: true
-        path: /admin/office/vehicle/vehicle/plan
+          disable-req: false  #是否禁用请求日志输出
+          disable-resp: false #是否禁用响应日志输出
+        path: /test #需要过滤的匹配路径
+      - log:
+          disable-req: false
+          disable-resp: false
+        path: /do* #需要过滤的匹配路径
+    sensitization-properties:
+      sensitization-fields:
+        - mobile
+        - idCard
 spring:
   application:
     name: demo

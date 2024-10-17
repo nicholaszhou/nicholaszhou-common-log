@@ -3,6 +3,7 @@ package io.github.nicholaszhou.properties;
 import io.github.nicholaszhou.log.HttpLogger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
@@ -14,15 +15,6 @@ import java.util.stream.Stream;
 @Data
 @ConfigurationProperties(prefix = "common.log")
 public class CommonLogProperties {
-
-    /**
-     * 是否启用 LogAutoConfiguration 配置
-     */
-    private Boolean enable = true;
-
-    private Boolean trace = true;
-
-    private Boolean sensitization = true;
 
     /**
      * http 路径 相关配置

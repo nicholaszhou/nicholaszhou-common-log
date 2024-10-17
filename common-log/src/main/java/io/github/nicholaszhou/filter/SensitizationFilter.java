@@ -17,25 +17,22 @@ import java.io.IOException;
 @Order(-101)
 public class SensitizationFilter extends OncePerRequestFilter {
 
-    private MvcPathMappingOperator mvcPathMappingOperator;
+    private CommonLogProperties commonLogProperties;
 
-    public SensitizationFilter(MvcPathMappingOperator mvcPathMappingOperator) {
-        this.mvcPathMappingOperator = mvcPathMappingOperator;
+    public SensitizationFilter(CommonLogProperties commonLogProperties) {
+        this.commonLogProperties = commonLogProperties;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        CommonLogProperties.SensitizationProperties sensitizationProperties = mvcPathMappingOperator.findSensitizationProperties(request);
-
-        if (sensitizationProperties == null) {
+        if (commonLogProperties.getSensitizationProperties() == null || commonLogProperties.getSensitizationProperties().getSensitizationFields() == null) {
             // 不需要脱敏
             filterChain.doFilter(request, response);
             return;
         }
-
         // 脱敏上下文绑定
-        MvcPathMappingOperator.bindSensitizationContext(sensitizationProperties.getSensitizationFields(),
-                sensitizationProperties.getLogger());
+        MvcPathMappingOperator.bindSensitizationContext(commonLogProperties.getSensitizationProperties().getSensitizationFields(),
+                commonLogProperties.getSensitizationProperties().getLogger());
         try {
             filterChain.doFilter(request, response);
         } finally {

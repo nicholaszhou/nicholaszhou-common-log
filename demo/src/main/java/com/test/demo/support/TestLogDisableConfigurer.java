@@ -24,7 +24,7 @@ public class TestLogDisableConfigurer implements HttpLogConfigurer {
     public void addHttpLogConfig(List<CommonLogProperties.HttpPathProperties> logHttpPropertiesMap) {
 
         CommonLogProperties.HttpPathProperties commonLogHttpProperties = new CommonLogProperties.HttpPathProperties();
-        commonLogHttpProperties.setPath("/ttt/**");
+        commonLogHttpProperties.setPath("/test");
         commonLogHttpProperties.setMethods(Collections.singleton(HttpMethod.GET));
 
         CommonLogProperties.LogProperties logProperties = new CommonLogProperties.LogProperties();

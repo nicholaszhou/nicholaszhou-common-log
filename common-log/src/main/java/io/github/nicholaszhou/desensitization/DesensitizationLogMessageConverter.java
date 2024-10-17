@@ -17,11 +17,8 @@ import java.util.regex.Pattern;
 /**
  * 脱敏日志转化器
  */
-@EnableConfigurationProperties({CommonLogProperties.class})
 public class DesensitizationLogMessageConverter extends ClassicConverter {
 
-    @Autowired
-    private CommonLogProperties commonLogProperties;
 
     private static final Integer MAX_MESSAGE_LENGTH = 10000;
 

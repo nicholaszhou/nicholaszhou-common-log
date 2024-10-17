@@ -47,10 +47,13 @@ public class MvcLogRequestHandler implements ReadableBodyRequestHandler {
             // 获取配置文件中定义的header
             if (logProperties != null) {
                 requestHeaderKeys = logProperties.getLogReqHeader();
+                if (requestHeaderKeys != null && !requestHeaderKeys.isEmpty()) {
+                    // 使用toLowerCase()方法将每个字符串转换为小写
+                    requestHeaderKeys = requestHeaderKeys.stream().map(String::toLowerCase).collect(Collectors.toSet());
+                }
             }
-            // 使用toLowerCase()方法将每个字符串转换为小写
-            requestHeaderKeys = requestHeaderKeys.stream().map(String::toLowerCase).collect(Collectors.toSet());
-            if ( requestHeaderKeys != null && !requestHeaderKeys.isEmpty()) {
+
+            if (requestHeaderKeys != null && !requestHeaderKeys.isEmpty()) {
                 // 遍历原始Map的键，并与keysToFilter进行比较
                 for (Map.Entry<String, String> entry : headerMap.entrySet()) {
                     if (requestHeaderKeys.contains(entry.getKey())) {

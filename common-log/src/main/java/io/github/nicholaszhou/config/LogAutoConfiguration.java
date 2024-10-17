@@ -45,7 +45,7 @@ public class LogAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "common.log.sensitization", name = "enable", havingValue = "true", matchIfMissing = true)
     public SensitizationFilter sensitizationFilter() {
-        return new SensitizationFilter(mvcPathMappingOperator());
+        return new SensitizationFilter(commonLogProperties);
     }
 
     @Bean
@@ -59,6 +59,7 @@ public class LogAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "common.log.http", name = "enable", havingValue = "true", matchIfMissing = true)
     public HttpLoggerFilter httpLoggerFilter() {
         return new HttpLoggerFilter();
     }
