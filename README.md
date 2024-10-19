@@ -59,9 +59,9 @@ common:
 |:-------------------|:----|:--------------|:------------------------------------------------------------------------------------------------------------------------------|
 | &nbsp;&nbsp;&nbsp; | 进行中 | 输入输出日志记录      | 对接口的http输入和输出请求记录，并且可以屏蔽指定规则的接口,代码屏蔽方式正在完善                                                                                    | 
 | :white_check_mark: | 已完成 | 请求trace追踪     | 基于logback的mdc实现，MDC属性为: tid,基于 [transmittable-thread-local](https://github.com/alibaba/transmittable-thread-local)实现异步上下文传递问题 | 
-| &nbsp;&nbsp;&nbsp; | 已完成 | 日志请求ip记录      | 依赖nginx向后传递原始请求ip                                                                                                             | 
+| :white_check_mark: | 已完成 | 日志请求ip记录      | 依赖nginx向后传递原始请求ip                                                                                                             | 
 | &nbsp;&nbsp;&nbsp; | 进行中 | 日志脱敏          | 基于ClassicConverter实现，目前内置了几个关键字段的脱敏，灵活配置待完善                                                                                   |
 | :white_check_mark: | 已完成 | 日志策略区分环境      | 内置logback-spring.xml，可以参照修改，如果不指定                                                                                             |
 | :white_check_mark: | 已完成 | 普通日志及错误日志记录   | 内置logback-spring.xml，可以参照修改                                                                                                   |
 | &nbsp;&nbsp;&nbsp; | 未开始 | 支持springboot3 | 适配springboo3版本                                                                                                                |
-| :white_check_mark: | 未开始 | 异步性能测试        | 异步AsyncAppender对性能的提升                                                                                                   |
+| &nbsp;&nbsp;&nbsp; | 未开始 | 异步性能测试        | 异步AsyncAppender对性能的提升                                                                                                   |
