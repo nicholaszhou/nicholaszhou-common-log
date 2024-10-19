@@ -3,11 +3,8 @@ package io.github.nicholaszhou.desensitization;
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import io.github.nicholaszhou.log.MvcPathMappingOperator;
-import io.github.nicholaszhou.properties.CommonLogProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

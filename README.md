@@ -64,3 +64,4 @@ common:
 | :white_check_mark: | 已完成 | 日志策略区分环境      | 内置logback-spring.xml，可以参照修改，如果不指定                                                                                             |
 | :white_check_mark: | 已完成 | 普通日志及错误日志记录   | 内置logback-spring.xml，可以参照修改                                                                                                   |
 | &nbsp;&nbsp;&nbsp; | 未开始 | 支持springboot3 | 适配springboo3版本                                                                                                                |
+| :white_check_mark: | 未开始 | 异步性能测试        | 异步AsyncAppender对性能的提升                                                                                                   |

@@ -10,7 +10,7 @@
     <property name="log.errorpath" value="${log.errorpath:-/logs/error/${log_name}}"/>
     <property name="log.maxDay" value="${log.maxDay:-3}"/>
 
-    <conversionRule conversionWord="m"
+    <conversionRule conversionWord="msg"
                     converterClass="io.github.nicholaszhou.desensitization.DesensitizationLogMessageConverter"/>
     <conversionRule conversionWord="stack"
                     converterClass="net.logstash.logback.stacktrace.ShortenedThrowableConverter" />
@@ -19,7 +19,7 @@
             <level>DEBUG</level>
         </filter>
         <encoder>
-            <Pattern>%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %m%n</Pattern>
+            <Pattern>%d{MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{uid},%X{tid}] - %msg%n</Pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -42,7 +42,7 @@
                         "tid":"%X{tid}",
                         "thread": "%thread",
                         "class": "%logger{40}",
-                        "message": "%m",
+                        "message": "%msg",
                         "stack": "%stack"
                         }
                     </pattern>
@@ -80,7 +80,7 @@
                         "tid":"%X{tid}",
                         "thread": "%thread",
                         "class": "%logger{40}",
-                        "message": "%m",
+                        "message": "%msg",
                         "stack": "%stack"
                         }
                     </pattern>
@@ -103,16 +103,22 @@
         </filter>
     </appender>
 
-    <!-- 异步写日志 -->
+    <!-- todo 异步写日志 ,对脱敏有影响，问题正在调查-->
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
-        <queueSize>1024</queueSize>
+        <queueSize>2048</queueSize>
+        <neverBlock>true</neverBlock>
+        <!-- 是否记录调用者额外的信息(比如记录后，可以打印行号)会造成性能损耗，默认false只记录线程名字和mdc信息 -->
+        <includeCallerData>true</includeCallerData>
         <appender-ref ref="FILE_OUT"/>
     </appender>
 
     <appender name="ASYNC_ERROR_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
-        <queueSize>1024</queueSize>
+        <queueSize>2048</queueSize>
+        <neverBlock>true</neverBlock>
+        <!-- 是否记录调用者额外的信息(比如记录后，可以打印行号)会造成性能损耗，默认false只记录线程名字和mdc信息 -->
+        <includeCallerData>true</includeCallerData>
         <appender-ref ref="ERROR_FILE"/>
     </appender>
 
@@ -122,10 +128,10 @@
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache" level="warn"/>
         <logger name="io.lettuce" level="warn"/>
-        <root level="INFO">
+        <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ASYNC_FILE"/>
-            <appender-ref ref="ASYNC_ERROR_FILE"/>
+            <appender-ref ref="FILE_OUT"/>
+            <appender-ref ref="ERROR_FILE"/>
         </root>
     </springProfile>
 
@@ -138,8 +144,8 @@
         <logger name="org.mybatis" level="error"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ASYNC_FILE"/>
-            <appender-ref ref="ASYNC_ERROR_FILE"/>
+            <appender-ref ref="FILE_OUT"/>
+            <appender-ref ref="ERROR_FILE"/>
         </root>
     </springProfile>
 </configuration>

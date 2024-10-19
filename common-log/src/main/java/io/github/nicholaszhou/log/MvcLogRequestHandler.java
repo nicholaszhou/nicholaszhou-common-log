@@ -63,7 +63,7 @@ public class MvcLogRequestHandler implements ReadableBodyRequestHandler {
             } else {
                 showedHeaderMap = headerMap;
             }
+            HttpLogger.logForRequest(request, showedHeaderMap, disableReqBody, disableReq);
         }
-        HttpLogger.logForRequest(request, showedHeaderMap, disableReqBody, disableReq);
     }
 }

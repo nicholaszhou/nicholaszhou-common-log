@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class TestEntity {
     private String mobile;
     private String deviceType;
-    private Integer idCard;
+    private String idCard;
 }
