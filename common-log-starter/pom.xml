@@ -12,8 +12,8 @@
     <artifactId>common-log-starter</artifactId>
     <version>0.0.1.14</version>
     <packaging>jar</packaging>
-    <name>common-log</name>
-    <description>common-log</description>
+    <name>common-log-starter</name>
+    <description>common-log-starter</description>
     <url>https://github.com/nicholaszhou/nicholaszhou-common-log</url>
     <licenses>
         <license>

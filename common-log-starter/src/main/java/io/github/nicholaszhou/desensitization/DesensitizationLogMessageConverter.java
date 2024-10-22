@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,23 +18,18 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
 
     private static final Integer MAX_MESSAGE_LENGTH = 10000;
 
-    private static final Map<String, PatternReplace> FILED_PATTERN_MAP = new HashMap<>();
-    private static final ServiceLoader<PatternReplaceConfig> LOADER = ServiceLoader.load(PatternReplaceConfig.class);
+    private final Map<String, PatternReplace> filedPatternMap = new HashMap<>();
+    private final ServiceLoader<PatternReplaceConfig> patternReplaceConfigLoaders = ServiceLoader.load(PatternReplaceConfig.class);
 
-    private static final Map<String, PatternReplace> NO_MATCH_FILED_PATTERN_MAP = new ConcurrentHashMap<>();
-    private static final String NO_MATCH_PATTERN_TEMPLATE = "(\"\\s*:\\s*\"|=).*?(?=(\"|,|&))";
-    private static final String NO_MATCH_REPLACE = "$1$2******";
 
-    static {
+    {
         initDefaultPattern();
         initCustomConfig();
     }
 
     @Override
     public String convert(ILoggingEvent event) {
-        return MvcPathMappingOperator.getSensitizationField()
-                .map(s -> doDesensitization(event.getFormattedMessage(), s))
-                .orElse(event.getFormattedMessage());
+        return MvcPathMappingOperator.getSensitizationField().map(s -> doDesensitization(event.getFormattedMessage(), s)).orElse(event.getFormattedMessage());
     }
 
     private String doDesensitization(String message, Set<String> sensitizationFieldSet) {
@@ -43,53 +37,54 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
             message = message.substring(0, MAX_MESSAGE_LENGTH);
         }
         for (String filed : sensitizationFieldSet) {
-            PatternReplace patternReplace = FILED_PATTERN_MAP.get(filed);
+            PatternReplace patternReplace = filedPatternMap.get(filed);
             if (patternReplace == null) {
-                patternReplace = NO_MATCH_FILED_PATTERN_MAP.computeIfAbsent(filed, key ->
-                        new PatternReplace(Pattern.compile(String.format(NO_MATCH_PATTERN_TEMPLATE, key)), NO_MATCH_REPLACE));
+                continue;
             }
             message = patternReplace.replace(message);
         }
         return message;
     }
 
-    private static void initDefaultPattern() {
+    private void initDefaultPattern() {
         /*
          * 正则中 () 中匹配为一组
          * $1 代表从前到后中第一个匹配的组 , $2 为第二个; 不在()内的不计入组
          */
         Pattern phonePattern = Pattern.compile("(mobile|phone|phoneNo)(\"\\s*:\\s*\"|=|\\s*:)(\\d{3})\\d{4}(\\d{4})");
         PatternReplace phonePatternReplace = new PatternReplace(phonePattern, "$1$2$3****$4");
-        FILED_PATTERN_MAP.put("mobile", phonePatternReplace);
-        FILED_PATTERN_MAP.put("phone", phonePatternReplace);
-        FILED_PATTERN_MAP.put("phoneNo", phonePatternReplace);
+        filedPatternMap.put("mobile", phonePatternReplace);
+        filedPatternMap.put("phone", phonePatternReplace);
+        filedPatternMap.put("phoneNo", phonePatternReplace);
 
-        Pattern certIdPattern = Pattern.compile("(certId|idCard|idNo)(\"\\s*:\\s*\"|=)(\\d{6})\\d{8,11}(\\w{1})");
-        PatternReplace certIdPatternReplace = new PatternReplace(certIdPattern, "$1$2$3**************$4");
-        FILED_PATTERN_MAP.put("certId", certIdPatternReplace);
-        FILED_PATTERN_MAP.put("idCard", certIdPatternReplace);
-        FILED_PATTERN_MAP.put("idNo", certIdPatternReplace);
+//        Pattern certIdPattern = Pattern.compile("(certId|idCard|idNo)(\"\\s*:\\s*\"|=)(\\d{6})\\d{8,11}(\\w{1})");
+//        PatternReplace certIdPatternReplace = new PatternReplace(certIdPattern, "$1$2$3**************$4");
+//        filedPatternMap.put("certId", certIdPatternReplace);
+//        filedPatternMap.put("idCard", certIdPatternReplace);
+//        filedPatternMap.put("idNo", certIdPatternReplace);
 
 
         Pattern pwd = Pattern.compile("(password|pwd|appSecret)(\"\\s*:\\s*\"|=).*?(?=(\"|,|&))");
         PatternReplace pwdPatternReplace = new PatternReplace(pwd, "$1$2******");
 
-        FILED_PATTERN_MAP.put("pwd", pwdPatternReplace);
-        FILED_PATTERN_MAP.put("password", pwdPatternReplace);
-        FILED_PATTERN_MAP.put("appSecret", pwdPatternReplace);
+        filedPatternMap.put("pwd", pwdPatternReplace);
+        filedPatternMap.put("password", pwdPatternReplace);
+        filedPatternMap.put("appSecret", pwdPatternReplace);
 
         Pattern namePattern = Pattern.compile("(fullName)(\"\\s*:\\s*\"|=)([\\u4e00-\\u9fa5]{1})([\\u4e00-\\u9fa5]*)");
         PatternReplace namePatternReplace = new PatternReplace(namePattern, "$1$2$3**");
-        FILED_PATTERN_MAP.put("fullName", namePatternReplace);
+        filedPatternMap.put("fullName", namePatternReplace);
 
         Pattern addressPattern = Pattern.compile("(address)(\"\\s*:\\s*\"|=)([\\u4e00-\\u9fa5]{4}).*?(?=(\"|,|&))");
         PatternReplace addressPatternReplace = new PatternReplace(addressPattern, "$1$2$3***");
-        FILED_PATTERN_MAP.put("address", addressPatternReplace);
+        filedPatternMap.put("address", addressPatternReplace);
     }
 
-    private static void initCustomConfig() {
-        for (PatternReplaceConfig config : LOADER) {
-            config.addPatternReplace(FILED_PATTERN_MAP);
+    // 参考类加载器https://blog.csdn.net/briblue/article/details/54973413，和spi动态加载机制https://qidawu.github.io/posts/java-spi/
+    private void initCustomConfig() {
+        Thread.currentThread().getClass().getClassLoader();
+        for (PatternReplaceConfig config : patternReplaceConfigLoaders) {
+            filedPatternMap.putAll(config.addPatternReplace());
         }
     }
 
