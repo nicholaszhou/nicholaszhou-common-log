@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
+// 需要在resources/META-INF/service目录创建ch.qos.logback.classic.spi.Configurator，在文件里标记类的完整路径
 public class CustomDesensitizationExtendConfigurer implements PatternReplaceConfig {
     private static final Map<String, DesensitizationLogMessageConverter.PatternReplace> desensitizationLogFiledMap = new HashMap<>();
 
