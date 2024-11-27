@@ -4,12 +4,12 @@ import io.github.nicholaszhou.constant.MDCConstants;
 import io.github.nicholaszhou.properties.CommonLogProperties;
 import io.github.nicholaszhou.utils.HttpRequestUtils;
 import io.github.nicholaszhou.utils.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.CollectionUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 

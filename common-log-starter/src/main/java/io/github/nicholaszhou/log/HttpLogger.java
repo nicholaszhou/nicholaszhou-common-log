@@ -4,13 +4,13 @@ import io.github.nicholaszhou.constant.MDCConstants;
 import io.github.nicholaszhou.utils.HttpRequestUtils;
 import io.github.nicholaszhou.utils.IOUtils;
 import io.github.nicholaszhou.utils.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -20,14 +20,11 @@ import java.util.stream.Collectors;
 
 /**
  * 处理http请求的log
- *
- * @param headerKeyList  请求头需要打印的key列表
- * @param disableReqBody 请求体是否需要打印
- * @param disableReq     请求是否需要打印
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HttpLogger {
+
     public static void logForRequest(HttpServletRequest request, Map<String, String> headerMap, Boolean disableReqBody, boolean disableReq) {
         String body = HttpRequestUtils.BOUNDARY_BODY;
         if (!Boolean.TRUE.equals(disableReqBody)) {
@@ -55,7 +52,7 @@ public class HttpLogger {
             body = respBody(response);
         }
         if (!Boolean.TRUE.equals(disableResp)) {
-            logResponseBody(requestPath, body, response.getStatusCode(), headerKeyList);
+            logResponseBody(requestPath, body, response.getStatus(), headerKeyList);
         }
     }
 

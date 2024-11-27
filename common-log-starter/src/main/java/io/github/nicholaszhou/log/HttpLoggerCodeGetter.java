@@ -4,8 +4,8 @@ import com.github.yitter.idgen.YitIdHelper;
 import io.github.nicholaszhou.constant.MDCConstants;
 import io.github.nicholaszhou.log.interfacesupport.LoggerTraceCodeGetter;
 import io.github.nicholaszhou.utils.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;

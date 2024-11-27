@@ -6,38 +6,60 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ * 字符集工具类
+ */
 public class Charsets {
     private static final SortedMap<String, Charset> STANDARD_CHARSET_MAP;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset ISO_8859_1;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset US_ASCII;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset UTF_16;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset UTF_16BE;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset UTF_16LE;
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static final Charset UTF_8;
 
+    /**
+     * 私有构造方法
+     */
     public Charsets() {
     }
 
-    public static SortedMap<String, Charset> requiredCharsets() {
-        return STANDARD_CHARSET_MAP;
-    }
-
+    /**
+     * @param charset 字符集
+     * @return 字符集
+     */
     public static Charset toCharset(Charset charset) {
         return charset == null ? Charset.defaultCharset() : charset;
     }
 
+    /**
+     * @param charsetName 字符集名称
+     * @return 字符集
+     */
     public static Charset toCharset(String charsetName) {
         return charsetName == null ? Charset.defaultCharset() : Charset.forName(charsetName);
     }

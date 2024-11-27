@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+/**
+ * 共通属性类
+ */
 @Data
 @ConfigurationProperties(prefix = "common.log")
 public class CommonLogProperties {
@@ -32,6 +35,9 @@ public class CommonLogProperties {
     private SensitizationProperties sensitizationProperties;
 
 
+    /**
+     * http 路径 相关配置
+     */
     @Data
     public static class HttpPathProperties {
 
@@ -59,6 +65,9 @@ public class CommonLogProperties {
         private SensitizationProperties sensitizationProperties;
     }
 
+    /**
+     * log全局配置
+     */
     @Data
     public static class LogProperties {
         /**
@@ -93,6 +102,9 @@ public class CommonLogProperties {
     }
 
 
+    /**
+     * 脱敏相关配置
+     */
     @Data
     public static class SensitizationProperties {
 

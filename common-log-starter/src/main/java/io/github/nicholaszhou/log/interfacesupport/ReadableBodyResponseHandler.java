@@ -1,8 +1,8 @@
 package io.github.nicholaszhou.log.interfacesupport;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *  对http请求中response的拦截处理

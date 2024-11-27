@@ -1,12 +1,10 @@
 package org.slf4j;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
+import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 自定义mdcAdapter实现，来自https://github.com/ofpay/logback-mdc-ttl/tree/master
@@ -23,6 +21,7 @@ public class TtlMDCAdapter implements MDCAdapter {
 
     // keeps track of the last operation performed
     final ThreadLocal<Integer> lastOperation = new ThreadLocal<>();
+    private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
 
     static {
         mtcMDCAdapter = new TtlMDCAdapter();
@@ -134,6 +133,7 @@ public class TtlMDCAdapter implements MDCAdapter {
     /**
      * Get the current thread's MDC as a map. This method is intended to be used
      * internally.
+     * @return map - the MDC for this thread, may be null
      */
     public Map<String, String> getPropertyMap() {
         lastOperation.set(READ_OPERATION);
@@ -143,6 +143,7 @@ public class TtlMDCAdapter implements MDCAdapter {
     /**
      * Return a copy of the current thread's context map. Returned value may be
      * null.
+     * @return Map - the MDC for this thread, may be null
      */
     @Override
     public Map getCopyOfContextMap() {
@@ -154,6 +155,23 @@ public class TtlMDCAdapter implements MDCAdapter {
             return new HashMap<>(hashMap);
         }
     }
+
+    public void pushByKey(String key, String value) {
+        this.threadLocalMapOfDeques.pushByKey(key, value);
+    }
+
+    public String popByKey(String key) {
+        return this.threadLocalMapOfDeques.popByKey(key);
+    }
+
+    public Deque<String> getCopyOfDequeByKey(String key) {
+        return this.threadLocalMapOfDeques.getCopyOfDequeByKey(key);
+    }
+
+    public void clearDequeByKey(String key) {
+        this.threadLocalMapOfDeques.clearDequeByKey(key);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void setContextMap(Map contextMap) {
@@ -167,4 +185,6 @@ public class TtlMDCAdapter implements MDCAdapter {
 
 
     }
+
+
 }

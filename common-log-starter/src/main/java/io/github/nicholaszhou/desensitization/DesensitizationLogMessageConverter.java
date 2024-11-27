@@ -88,6 +88,9 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
         }
     }
 
+    /**
+     * 日志转换格式
+     */
     @Data
     @AllArgsConstructor
     public static class PatternReplace {

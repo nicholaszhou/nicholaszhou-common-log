@@ -3,19 +3,19 @@ package io.github.nicholaszhou.filter;
 import io.github.nicholaszhou.constant.MDCConstants;
 import io.github.nicholaszhou.log.HttpLoggerCodeGetter;
 import io.github.nicholaszhou.log.LogTraceContext;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * 监听请求,设置mdc的traceCode
  */
-@Order(-102 )
+@Order(-102)
 public class TraceCodeFilter extends OncePerRequestFilter {
     private final HttpLoggerCodeGetter logTraceCodeGetter = new HttpLoggerCodeGetter();
 
@@ -30,4 +30,5 @@ public class TraceCodeFilter extends OncePerRequestFilter {
             LogTraceContext.clear();
         }
     }
+
 }

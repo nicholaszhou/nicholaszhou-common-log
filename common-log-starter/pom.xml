@@ -5,12 +5,12 @@
     <parent>
         <groupId>io.github.nicholaszhou</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.1.1</version>
+        <version>3.3.0.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>common-log-starter</artifactId>
-    <version>0.0.1.14</version>
+    <version>3.3.0.1</version>
     <packaging>jar</packaging>
     <name>common-log-starter</name>
     <description>common-log-starter</description>
@@ -22,6 +22,18 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <properties>
+        <!-- 解决编译时，编码警告乱码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--   解决maven命令执行时控制台出现中文乱码     -->
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+        <!-- 其他乱码问题解决 -->
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
 
     <developers>
         <developer>
@@ -50,16 +62,11 @@
             <artifactId>spring-boot-starter</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>log4j-api</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
                 </exclusion>
             </exclusions>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -79,7 +86,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>5.3</version>
+            <version>7.2</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jackson-annotations</artifactId>
@@ -88,9 +95,10 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

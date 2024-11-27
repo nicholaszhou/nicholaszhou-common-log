@@ -3,10 +3,10 @@ package io.github.nicholaszhou.log;
 import io.github.nicholaszhou.properties.CommonLogProperties;
 import io.github.nicholaszhou.log.interfacesupport.ReadableBodyResponseHandler;
 import io.github.nicholaszhou.utils.HttpRequestUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j

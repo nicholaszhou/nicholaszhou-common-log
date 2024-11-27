@@ -1,4 +1,4 @@
-项目介绍(目前处于不稳定迭代开发中,当前基于springboo2.X开发)：
+项目介绍(目前处于不稳定迭代开发中,当前基于springboo3.3开发)：
 -------------------------------------
 
 common-log-utils是一个springboot使用logback的log日志组件<br>
@@ -22,7 +22,7 @@ common-log-utils是一个springboot使用logback的log日志组件<br>
 <dependency>
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>common-log-starter</artifactId>
-    <version>0.0.1.13</version>
+    <version>3.3.0.1</version>
 </dependency>
 ```
 完成以上步骤，即可实现上述功能
@@ -60,7 +60,7 @@ common:
 
 | Ok?                | 状态  | 功能                                  | 描述                                                                                                                            |
 |:-------------------|:----|:------------------------------------|:------------------------------------------------------------------------------------------------------------------------------|
-| &nbsp;&nbsp;&nbsp; | 进行中 | 输入输出日志记录                            | 对接口的http输入和输出请求记录，并且可以屏蔽指定规则的接口,代码屏蔽方式正在完善                                                                                    | 
+| :white_check_mark: | 已完成 | 输入输出日志记录                            | 对接口的http输入和输出请求记录，并且可以屏蔽指定规则的接口,代码屏蔽方式正在完善                                                                                    | 
 | :white_check_mark: | 已完成 | 请求trace追踪                           | 基于logback的mdc实现，MDC属性为: tid,基于 [transmittable-thread-local](https://github.com/alibaba/transmittable-thread-local)实现异步上下文传递问题 | 
 | :white_check_mark: | 已完成 | 日志请求ip记录                            | 依赖nginx向后传递原始请求ip                                                                                                             | 
 | &nbsp;&nbsp;&nbsp; | 已完成 | 日志脱敏                                | 基于ClassicConverter实现，目前内置了几个关键字段的脱敏，灵活配置待完善                                                                                   |
