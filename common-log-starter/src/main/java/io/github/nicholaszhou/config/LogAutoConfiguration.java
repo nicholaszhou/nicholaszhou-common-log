@@ -1,8 +1,8 @@
 package io.github.nicholaszhou.config;
 
-import io.github.nicholaszhou.filter.HttpLoggerFilter;
-import io.github.nicholaszhou.filter.SensitizationFilter;
-import io.github.nicholaszhou.filter.TraceCodeFilter;
+import io.github.nicholaszhou.desensitization.filter.HttpLoggerFilter;
+import io.github.nicholaszhou.desensitization.filter.SensitizationFilter;
+import io.github.nicholaszhou.desensitization.filter.TraceCodeFilter;
 import io.github.nicholaszhou.log.MvcLogRequestHandler;
 import io.github.nicholaszhou.log.MvcLogResponseHandler;
 import io.github.nicholaszhou.log.MvcPathMappingOperator;

@@ -1,4 +1,4 @@
-package io.github.nicholaszhou.filter;
+package io.github.nicholaszhou.desensitization.filter;
 
 import io.github.nicholaszhou.log.MvcPathMappingOperator;
 import io.github.nicholaszhou.properties.CommonLogProperties;

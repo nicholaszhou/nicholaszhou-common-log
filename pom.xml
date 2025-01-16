@@ -5,7 +5,7 @@
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>${version}</version>
+    <version>3.3.0.1</version>
     <name>nicholaszhou-log</name>
     <description>日志组件</description>
     <url>https://github.com/nicholaszhou/nicholaszhou-common-log</url>
@@ -40,7 +40,8 @@
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
         <yitter-idgenerator.version>1.0.6</yitter-idgenerator.version>
         <spring-boot.version>3.3.4</spring-boot.version>
-        <version>3.3.0.1</version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -117,6 +118,7 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -180,7 +182,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <!--与xml中对应的id一致-->

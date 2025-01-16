@@ -127,6 +127,7 @@
         <logger name="com.alibaba" level="warn"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache" level="warn"/>
+        <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="INFO"/>
         <logger name="io.lettuce" level="warn"/>
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
@@ -140,6 +141,7 @@
         <logger name="com.alibaba" level="error"/>
         <logger name="org.springframework" level="error"/>
         <logger name="org.apache" level="error"/>
+        <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="INFO"/>
         <logger name="io.lettuce" level="error"/>
         <logger name="org.mybatis" level="error"/>
         <root level="INFO">

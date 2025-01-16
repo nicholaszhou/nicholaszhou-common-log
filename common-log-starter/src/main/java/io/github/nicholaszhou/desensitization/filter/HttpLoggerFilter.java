@@ -1,4 +1,4 @@
-package io.github.nicholaszhou.filter;
+package io.github.nicholaszhou.desensitization.filter;
 
 import io.github.nicholaszhou.constant.MDCConstants;
 import io.github.nicholaszhou.log.CopyContentCachingRequestWrapper;

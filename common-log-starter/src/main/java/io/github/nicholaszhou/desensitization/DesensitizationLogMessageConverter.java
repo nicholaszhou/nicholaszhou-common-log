@@ -82,7 +82,6 @@ public class DesensitizationLogMessageConverter extends ClassicConverter {
 
     // 参考类加载器https://blog.csdn.net/briblue/article/details/54973413，和spi动态加载机制https://qidawu.github.io/posts/java-spi/
     private void initCustomConfig() {
-        Thread.currentThread().getClass().getClassLoader();
         for (PatternReplaceConfig config : patternReplaceConfigLoaders) {
             filedPatternMap.putAll(config.addPatternReplace());
         }
