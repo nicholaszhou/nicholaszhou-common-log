@@ -1,4 +1,5 @@
-项目介绍(目前处于不稳定迭代开发中,当前基于springboo2.X开发)：
+项目介绍(目前处于不稳定迭代开发中,当前基于springboo2.X开发)：  
+对于springboot3.0版本的适配，请参考：[springboot3.0版本分支](https://github.com/nicholaszhou/nicholaszhou-common-log/tree/springboot3.3)
 -------------------------------------
 
 common-log-utils是一个springboot使用logback的log日志组件<br>
