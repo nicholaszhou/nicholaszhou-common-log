@@ -129,6 +129,8 @@
         <logger name="org.apache" level="warn"/>
         <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="INFO"/>
         <logger name="io.lettuce" level="warn"/>
+        <logger name="org.mybatis" level="warn"/>
+        <logger name="io.undertow" level="error"/>
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_OUT"/>
@@ -144,6 +146,7 @@
         <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="INFO"/>
         <logger name="io.lettuce" level="error"/>
         <logger name="org.mybatis" level="error"/>
+        <logger name="io.undertow" level="error"/>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE_OUT"/>

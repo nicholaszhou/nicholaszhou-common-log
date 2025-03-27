@@ -22,7 +22,7 @@ common-log-utils是一个springboot使用logback的log日志组件<br>
 <dependency>
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>common-log-starter</artifactId>
-    <version>3.3.0.1</version>
+    <version>3.3.0.2</version>
 </dependency>
 ```
 完成以上步骤，即可实现上述功能
@@ -118,7 +118,12 @@ Caused by: java.util.ServiceConfigurationError: io.github.nicholaszhou.desensiti
 		... 43 more
 ```
 解决方法: 去掉删除maven中spring-boot-devtools的依赖  
-参考:https://blog.csdn.net/zhyhang/article/details/114239800
+参考:https://blog.csdn.net/zhyhang/article/details/114239800  
 
 ### 参考资料
-https://github.com/weweibuy/weweibuy-framework
+https://github.com/weweibuy/weweibuy-framework  
+spring-cloud-starter-sleuth
+
+Release Notes 
+Version 3.3.0.2  
+1.增加log中对undertow及mybatis的debug日志屏蔽  

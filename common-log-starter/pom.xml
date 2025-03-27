@@ -5,11 +5,11 @@
     <parent>
         <groupId>io.github.nicholaszhou</groupId>
         <artifactId>parent</artifactId>
-        <version>3.3.0.1</version>
+        <version>3.3.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>common-log-starter</artifactId>
-    <version>3.3.0.1</version>
+    <version>3.3.0.2</version>
     <packaging>jar</packaging>
     <name>common-log-starter</name>
     <description>common-log-starter</description>
