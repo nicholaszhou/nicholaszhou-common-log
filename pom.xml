@@ -5,7 +5,7 @@
     <groupId>io.github.nicholaszhou</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.3.0.1</version>
+    <version>3.3.0.2</version>
     <name>nicholaszhou-log</name>
     <description>日志组件</description>
     <url>https://github.com/nicholaszhou/nicholaszhou-common-log</url>

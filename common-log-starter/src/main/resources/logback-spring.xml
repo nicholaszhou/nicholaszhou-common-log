@@ -127,7 +127,10 @@
         <logger name="com.alibaba" level="warn"/>
         <logger name="org.springframework" level="warn"/>
         <logger name="org.apache" level="warn"/>
-        <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="INFO"/>
+        <logger name="i.s.v3.core.converter.ModelConverterContextImpl" level="WARN"/>
+        <!-- 新增Swagger日志屏蔽 -->
+        <logger name="io.swagger.v3" level="WARN"/>
+        <logger name="org.springdoc" level="WARN"/>
         <logger name="io.lettuce" level="warn"/>
         <logger name="org.mybatis" level="warn"/>
         <logger name="io.undertow" level="error"/>
